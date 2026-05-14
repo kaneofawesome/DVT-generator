@@ -1,0 +1,86 @@
+{
+  "meta": {
+    "revision": "0.1",
+    "draftStatus": "Draft",
+    "date": "YYYY-MM-DD",
+    "title": "DESIGN VERIFICATION TEST",
+    "productName": "<Product Name>",
+    "subtitle": "<Sub-title — what this unit is>",
+    "descriptor": "<One-line descriptor of the test procedure / bench>",
+    "headerLine": "{productName} DVT — Rev {revision} ({draftStatus})",
+    "creator": "<Owner / department>",
+
+    "coverRows": [
+      {"label": "Document Type", "value": "Design Verification Test (DVT)"},
+      {"label": "Unit Under Test (UUT)", "value": "<Detailed UUT description, part number, revision>"},
+      {"label": "Test Bench", "value": "<Bench / fixture name and instruments>"},
+      {"label": "Release Gate", "value": "<How this DVT gates release; reference to Appendix B and any external-ref sections>"},
+      {"label": "Sibling Documents", "value": "<Related DVTs and reports>"},
+      {"label": "Format", "value": "Contents page (clickable TOC) immediately after cover. External-reference sections (if any) precede internal test sections. Tester records measurement in Measure column. Field refresh (Word: Ctrl+A → F9; LibreOffice: Tools → Update → Fields) updates page numbers and TOC P/F mirror. Elaborations in Appendix C. Equipment in Appendix A. Release-gate matrix in Appendix B."},
+      {"label": "Revision", "value": "{revision} ({draftStatus}) — {date}"},
+      {"label": "Date", "value": "________________________"},
+      {"label": "Tester", "value": "________________________"},
+      {"label": "Reviewer / Sign-off", "value": "________________________"},
+      {"label": "Owner (Engineering)", "value": "<Department>"}
+    ],
+
+    "knownIssues": {
+      "heading": "Known Issues",
+      "intro": "<Optional: rationale for keeping these xfails until the underlying defects are fixed>"
+    },
+
+    "externalRefs": [
+      {
+        "code": "<short_symbolic_code>",
+        "sectionLetter": "A",
+        "title": "<External DVT name>",
+        "intro": "<Why this is referenced and not repeated here>",
+        "linkPlaceholder": "<Confluence Link>",
+        "passCriteria": "<What counts as Section A passing — usually a signed copy of the external DVT attached>",
+        "attestHeaders": ["<Field 1 the tester fills in>", "<Field 2 the tester fills in>"]
+      }
+    ],
+
+    "appendixA": {
+      "heading": "Appendix A — Equipment",
+      "intro": "All test equipment, fixtures, and instrumentation referenced from test rows."
+    },
+    "appendixB": {
+      "heading": "Appendix B — Release-Gate Matrix",
+      "intro": "Change severity mapping to required DVT sections. Straw-man — refine with stakeholders before treated as authoritative.",
+      "categoriesTitle": "B.1 Change-severity categories",
+      "matrixTitle": "B.2 Compatibility matrix",
+      "matrixHeaders": ["<Axis label>", "<Variant 1>", "<Variant 2>", "Notes"],
+      "matrixColumnWidths": [2200, 2400, 2400, 3224]
+    },
+    "appendixC": {
+      "heading": "Appendix C — Elaborations and Rationale",
+      "intro": "Context and rationale referenced by Brief column. Listed by table reference or topic."
+    }
+  },
+
+  "_schema_note_steps": "Each test row. Two styles supported: (a) legacy `ref: 'C.1'` — explicit letter; (b) preferred `section: <code>, subref: '1'` — script computes the letter from section position. The preferred style survives section reordering without edits. measure stays empty — tester writes in.",
+  "steps": [
+    {"section": "<section_code>", "subref": "1", "header": "<Test name>", "brief": "<Imperative-voice 1-sentence action. Cross-ref another step with [other_code.1.1]. Cross-ref a section with [other_code].>", "criteria": "<Terse pass criteria — no full sentences>", "measure": ""}
+  ],
+
+  "_schema_note_sections": "Each entry renders as its own section page. `code` is a stable symbolic name used by step `section` and by [code]/[code.subref] cross-ref tokens. Letter is assigned by array position (after externalRefs) — reorder this array to renumber, no other edits needed. `id` field is back-compat only.",
+  "sections": [
+    {"code": "<section_code>", "name": "<Section name>", "intro": "<Optional 1-2 sentence intro shown beneath the section heading>"}
+  ],
+
+  "_schema_note_knownIssues": "Rows of the Known-Issues table immediately after the cover. Omit the whole array if not applicable.",
+  "knownIssues": [],
+
+  "_schema_note_elaborations": "Long-form notes for Appendix C, indexed by ref (label).",
+  "elaborations": [],
+
+  "_schema_note_equipment": "Rows of the Equipment table in Appendix A.",
+  "equipment": [],
+
+  "_schema_note_releaseGate": "categories drives Appendix B.1. matrix drives Appendix B.2 (cells array length must match meta.appendixB.matrixHeaders).",
+  "releaseGate": {
+    "categories": [],
+    "matrix": []
+  }
+}

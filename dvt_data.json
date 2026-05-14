@@ -1,0 +1,122 @@
+{
+  "_comment": "Generic example DVT — exercises every feature of the generator (interpolation, cross-refs, external refs, lint). Copy this file, rename, and edit for a new product. The schema is also documented in dvt_data_template.json.",
+
+  "meta": {
+    "revision": "0.1",
+    "draftStatus": "Draft",
+    "title": "DESIGN VERIFICATION TEST",
+    "productName": "Example Device",
+    "subtitle": "Sub-Assembly Boundary — Functional and Stress Verification",
+    "descriptor": "Generic example DVT — copy this file and edit meta + content to spin up a real product DVT",
+    "headerLine": "{productName} DVT — Rev {revision} ({draftStatus})",
+    "creator": "Engineering",
+
+    "coverRows": [
+      {"label": "Document Type", "value": "Design Verification Test (DVT)"},
+      {"label": "Unit Under Test (UUT)", "value": "Example Device — PN XXXXXX, Rev A (replace with real description)"},
+      {"label": "Test Bench", "value": "Example bench / fixture name and key instruments"},
+      {"label": "Release Gate", "value": "Section severity → required sections per Appendix B. Section A (external Sub-Assembly DVT) must be signed off before this DVT begins."},
+      {"label": "Sibling Documents", "value": "Sub-Assembly DVT (PCB-level, see Section A); other related DVTs and reports"},
+      {"label": "Format", "value": "Contents page (clickable TOC) immediately after cover. Section A = external reference. Sections B onward = table-based per-test rows. Tester records measurement in Measure column. Field refresh (Word: Ctrl+A → F9; LibreOffice: Tools → Update → Fields) updates page numbers and TOC P/F mirror."},
+      {"label": "Revision", "value": "{revision} ({draftStatus}) — {date}"},
+      {"label": "Date", "value": "________________________"},
+      {"label": "Tester", "value": "________________________"},
+      {"label": "Reviewer / Sign-off", "value": "________________________"},
+      {"label": "Owner (Engineering)", "value": "Engineering"}
+    ],
+
+    "knownIssues": {
+      "heading": "Known Issues",
+      "intro": "Suite-side xfail entries and corresponding DVT step pass criteria. Each row remains until fix releases and XPASSes."
+    },
+
+    "externalRefs": [
+      {
+        "code": "sub_assy_dvt",
+        "sectionLetter": "A",
+        "title": "Sub-Assembly DVT",
+        "intro": "Sub-assembly qualification (PCB-level functional, AOI) is owned by the external Sub-Assembly DVT. This document begins at the assembled-unit boundary; bare-board coverage is not repeated here.",
+        "linkPlaceholder": "<External Link>",
+        "passCriteria": "Signed Sub-Assembly DVT on record for the sub-assembly serial number installed in this unit. Signed copy attached as artifact. Section B does not begin until Section A artifact is present.",
+        "attestHeaders": ["Sub-assembly SN", "Sub-Assembly DVT signed (date / signer)"]
+      }
+    ],
+
+    "appendixA": {
+      "heading": "Appendix A — Equipment",
+      "intro": "All test equipment, fixtures, and instrumentation referenced from test rows."
+    },
+    "appendixB": {
+      "heading": "Appendix B — Release-Gate Matrix",
+      "intro": "Change severity mapping to required DVT sections. Refine with stakeholders before treated as authoritative.",
+      "categoriesTitle": "B.1 Change-severity categories",
+      "matrixTitle": "B.2 Variant compatibility matrix",
+      "matrixHeaders": ["Variant", "Status", "Notes"],
+      "matrixColumnWidths": [2400, 2000, 5824]
+    },
+    "appendixC": {
+      "heading": "Appendix C — Elaborations and Rationale",
+      "intro": "Context and rationale referenced by Brief column. Listed by ref or topic."
+    }
+  },
+
+  "sections": [
+    {"code": "mech",        "name": "Mechanical / Pre-energize Checks", "intro": "Run de-energized before mounting in the test fixture. Catches assembly defects that destroy hardware or invalidate downstream measurements at first power-up."},
+    {"code": "func",        "name": "Functional Bench Tests",            "intro": "Exercise documented interfaces with UUT in the test fixture. Tolerances trace to the product specification."},
+    {"code": "stress",      "name": "Stress and Environmental",          "intro": "Power-cycle and soak. Catches drift-class defects that single-shot tests miss."},
+    {"code": "integration", "name": "Integration Cross-Checks",          "intro": "Cross-checks at system level. Run only after Sections [mech]–[stress] pass on bench."}
+  ],
+
+  "steps": [
+    {"section": "mech", "subref": "1", "header": "Visual inspection",   "brief": "Inspect enclosure, harness, fastener seating with light and loupe.", "criteria": "No visible damage; all fasteners at spec torque; cable ties tight", "measure": ""},
+    {"section": "mech", "subref": "2", "header": "Connector seating",   "brief": "Tug-test every external connector and internal harness mate.",       "criteria": "All seated; latches engaged; tug-test holds; no connector damage", "measure": ""},
+    {"section": "mech", "subref": "3", "header": "Insulation (Megger)", "brief": "Apply 500 VDC line-to-chassis for 60 s with signal cables disconnected.", "criteria": "≥100 MΩ at every measurement point", "measure": ""},
+
+    {"section": "func", "subref": "1.1", "header": "Power-on banner",      "brief": "Apply nominal supply; capture boot banner over console.",                                "criteria": "Banner ≤ 2 s; identity string matches expected build; zero framing errors over 60 s idle", "measure": ""},
+    {"section": "func", "subref": "1.2", "header": "Idle rail voltages",   "brief": "DMM-measure each rail at nominal supply with UUT idle.",                                  "criteria": "Each rail within spec; idle current ≤ documented max",                                    "measure": ""},
+    {"section": "func", "subref": "1.3", "header": "Supply sweep",         "brief": "Sweep supply ±10% in 1 V steps with 30 s dwell. Log rails each step.",                     "criteria": "Rails within [func.1.2] tolerances at every step; no brownout, reset, or comm drop",      "measure": ""},
+    {"section": "func", "subref": "2.1", "header": "Comms identity read",  "brief": "Read identity registers via primary comm interface at default address.",                  "criteria": "Identity values match expected; zero frame/parity/CRC errors over 5 min",                 "measure": ""},
+    {"section": "func", "subref": "2.2", "header": "Sustained polling",    "brief": "Continuous polling at production rate for 60 s. Repeat [func.2.1] under load.",            "criteria": "Zero exceptions, retries, or framing errors; identity reads stable",                      "measure": ""},
+
+    {"section": "stress", "subref": "1", "header": "Power-cycle sweep", "brief": "50 power cycles at nominal dwell. Capture boot and key telemetry each cycle.", "criteria": "All 50 boot clean; no fault accumulation; rails within [func.1.2]",   "measure": ""},
+    {"section": "stress", "subref": "2", "header": "24 h soak",         "brief": "24 h continuous operation under representative load. Log rails + ambient temp.", "criteria": "No drift; no resets; bounded temp; logs complete; zero unexpected faults", "measure": ""},
+
+    {"section": "integration", "subref": "1", "header": "System-level cross-check", "brief": "Sub-tests under live load with companion subsystems connected.", "criteria": "Each sub-scenario produces expected behavior per the system test plan; no regressions vs prior release", "measure": ""}
+  ],
+
+  "knownIssues": [
+    {"defect": "Example: known firmware defect that masks XYZ behavior on Rev A units.", "jira": "TBD-NNNN",                "suite": "TestExample (xfail)",   "dvt": "[func.2.2]. XFAIL accepted; XPASS = fix landed."},
+    {"defect": "Example: interface contract change waiting on platform-side update.",   "jira": "Tracked outside Jira yet", "suite": "Soak runner timeout = new spec", "dvt": "[stress.2] timeout configuration; [integration.1] prerequisite."}
+  ],
+
+  "elaborations": [
+    {"ref": "[mech] intro",            "text": "Section [mech] runs de-energized to catch assembly defects that would destroy hardware or invalidate downstream electrical measurements. Mirrors the assembled-unit-level safety check from the sub-assembly DVT."},
+    {"ref": "[func.2.2] sustained polling", "text": "Continuous polling at production rate surfaces drift defects that single-read tests miss. Mark XFAIL in known-issues only when a defect is documented and not release-blocking."},
+    {"ref": "[stress.2] soak note",    "text": "24 h soak is the regression guard for any timing or buffer-management defect that only surfaces under sustained activity. Attach the runner's summary, first/last iteration logs, and rail traces to the data sheet."},
+    {"ref": "Release-gate caveat",     "text": "Appendix B is a starting point. Refine the change-severity categories and the compatibility matrix with Manufacturing Engineering, Quality, and the system-DVT owner before treating it as authoritative."}
+  ],
+
+  "equipment": [
+    {"name": "Programmable DC supply",          "action": "UUT supply for nominal and sweep ([func.1.3])",        "spec": "Programmable rise/fall, current-limited, traceable"},
+    {"name": "4½-digit DMM",                    "action": "Rail voltage, idle current ([func.1.2])",             "spec": "Calibrated, traceable"},
+    {"name": "Comms test PC + transport",       "action": "Identity, point-list, soak ([func.2], [stress.2])",   "spec": "Per primary comm-interface spec"},
+    {"name": "Insulation tester (Megger)",      "action": "Pre-energize check ([mech.3])",                       "spec": "500 VDC, traceable"},
+    {"name": "Power-cycle automation relay",    "action": "Cycle sweep ([stress.1])",                            "spec": "≥1 kHz switching margin; programmable dwell"},
+    {"name": "DAQ for soak instrumentation",    "action": "Rail and ambient logging ([stress.2])",               "spec": "≥1 sample/s; non-volatile capture"},
+    {"name": "Inspection light + 10× loupe",    "action": "Visual inspection ([mech.1])",                        "spec": "Bright LED + 10× optical"}
+  ],
+
+  "releaseGate": {
+    "categories": [
+      {"id": "1", "name": "Firmware patch (no hardware change)",                "required": "Automated suite + [func] sanity"},
+      {"id": "2", "name": "Firmware feature with interface contract change",    "required": "Automated suite + full [func] + diff against prior release"},
+      {"id": "3", "name": "Hardware change at sub-assembly level",              "required": "External Sub-Assembly DVT (Section A) re-signed + full Section [func] + [stress] + [integration]"},
+      {"id": "4", "name": "Mechanical / harness / enclosure change",            "required": "Full Section [mech] + [stress]"},
+      {"id": "5", "name": "Combined hardware + firmware release",               "required": "External Sub-Assembly DVT (Section A) re-signed + full DVT (B through E) + system-DVT regression"}
+    ],
+    "matrix": [
+      {"cells": ["Rev A",         "Current",      "Initial release target."]},
+      {"cells": ["Rev B (next)",  "TBD",          "Next-generation variant. Add row when board enters DVT."]}
+    ]
+  }
+}
